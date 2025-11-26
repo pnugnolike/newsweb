@@ -15,7 +15,7 @@ public class FirebaseConfig {
     @Bean
     public FirebaseApp initializeFirebase() throws IOException {
 
-        InputStream serviceAccount = getClass().getClassLoader().getResourceAsStream("serviceAccountKey.json");
+        InputStream serviceAccount = getClass().getClassLoader().getResourceAsStream("se.json");
 
         if (serviceAccount == null) {
             System.err.println("Firebase Service Account file not found. Firebase Auth/Firestore will not work.");
