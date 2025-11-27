@@ -109,7 +109,7 @@ onMounted(() => {
 const fetchNews = async () => {
   loading.value = true
   try {
-    const response = await axios.get('http://localhost:8080/api/external-news')
+    const response = await axios.get('https://newsweb-udjj.onrender.com/api/external-news')
     if (response.data?.articles) {
       news.value = response.data.articles.filter(
         item => item.urlToImage && item.description && item.title
@@ -129,7 +129,7 @@ const searchNews = async () => {
 
   loading.value = true
   try {
-    const response = await axios.get('http://localhost:8080/api/search-news', {
+    const response = await axios.get('https://newsweb-udjj.onrender.com/api/search-news', {
       params: { query: searchQuery.value }
     })
 

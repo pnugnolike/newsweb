@@ -206,7 +206,7 @@ const uploadFile = async (file) => {
   formData.append('file', file)
 
   try {
-    const response = await axios.post('http://localhost:8080/api/files/upload', formData, {
+    const response = await axios.post('https://newsweb-udjj.onrender.com/api/files/upload', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     })
     uploadStatus.value = 'Upload successful'

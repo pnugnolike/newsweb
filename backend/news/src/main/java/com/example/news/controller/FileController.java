@@ -1,5 +1,4 @@
 package com.example.news.controller;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -8,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder; // 🟢 สำคัญ: ต้องมี import นี้
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -22,12 +22,12 @@ import java.util.UUID;
 @RequestMapping("/api/files")
 public class FileController {
 
-    private final String uploadDir; // ⬅️ เปลี่ยนเป็น final field
+    private final String uploadDir;
 
-    public FileController(@Value("${file.upload-dir}") String uploadDir) {
+    // ใส่ default value เป็น "uploads" เผื่อกรณีลืมตั้งค่าใน application.properties
+    public FileController(@Value("${file.upload-dir:uploads}") String uploadDir) {
         this.uploadDir = uploadDir;
         try {
-            // Path จะมีค่าแล้ว ณ จุดนี้
             Path uploadPath = Paths.get(this.uploadDir).toAbsolutePath().normalize();
             Files.createDirectories(uploadPath);
         } catch (IOException e) {
@@ -35,15 +35,15 @@ public class FileController {
         }
     }
 
-
     @PostMapping("/upload")
     public ResponseEntity<Map<String, String>> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
 
         String originalFilename = file.getOriginalFilename();
         String extension = "";
-        int i = originalFilename.lastIndexOf('.');
-        if (i > 0) {
-            extension = originalFilename.substring(i);
+
+        // เช็ค null เพื่อความปลอดภัย
+        if (originalFilename != null && originalFilename.lastIndexOf('.') > 0) {
+            extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
         }
 
         String fileName = UUID.randomUUID().toString() + extension;
@@ -52,8 +52,12 @@ public class FileController {
 
         Files.copy(file.getInputStream(), targetLocation);
 
-        String baseUrl = "http://localhost:8080";
-        String fileUrl = baseUrl + "/api/files/download/" + fileName;
+        // 🟢 แก้ไขจุดนี้: สร้าง URL แบบ Dynamic ตามโดเมนจริงที่รันอยู่
+        // เช่น รันบน Render จะได้ https://news-app.onrender.com/api/files/download/xxxx
+        String fileUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/api/files/download/")
+                .path(fileName)
+                .toUriString();
 
         Map<String, String> response = new HashMap<>();
         response.put("fileUrl", fileUrl);
