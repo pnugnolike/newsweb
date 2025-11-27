@@ -1,0 +1,30 @@
+steps:
+  # 1. Build the container image
+  # สร้าง Docker Image จาก Dockerfile และ tag ให้ตรงกับ Project ID ของ Google Cloud
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/my-backend-service', '.']
+
+  # 2. Push the container image to Container Registry
+  # อัปโหลด Image ที่สร้างเสร็จแล้วขึ้นไปเก็บไว้บน Google Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/my-backend-service']
+
+  # 3. Deploy container to Cloud Run
+  # สั่ง Deploy Image นั้นไปที่ Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'my-backend-service'       # ชื่อ Service ที่จะปรากฏใน Cloud Run
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/my-backend-service'
+      - '--region'
+      - 'asia-southeast1'          # สิงคโปร์ (ใกล้ไทยที่สุด Latency ต่ำ)
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'  # อนุญาตให้เข้าถึงได้จากภายนอก (Public API)
+
+# กำหนดให้ Cloud Build เก็บ Image ไว้ที่ไหน
+images:
+  - 'gcr.io/$PROJECT_ID/my-backend-service'

@@ -1,0 +1,70 @@
+@import "./base.css";
+@import "tailwindcss";
+
+#app {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0 auto;
+  font-weight: normal;
+}
+
+
+a,
+.green {
+  text-decoration: none;
+  color: #2563eb;
+  transition: 0.2s ease;
+}
+
+@media (hover: hover) {
+  a:hover {
+    color: #1d4ed8;
+  }
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+.gap-safe {
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .gap-safe {
+    gap: 0.75rem;
+  }
+}
+
+.card-compact {
+  background: white;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease;
+}
+
+.card-compact:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  border-color: #d1d5db;
+}
